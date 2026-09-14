@@ -1686,17 +1686,17 @@ private fun MpvPlayerSurface(
 
     LaunchedEffect(mpvView, isPlaying, isBuffering) {
         val shouldKeepScreenOn = isPlaying || isBuffering
-        if (mpvView.keepScreenOn != shouldKeepScreenOn) {
-            mpvView.keepScreenOn = shouldKeepScreenOn
+        if (mpvView?.keepScreenOn != shouldKeepScreenOn) {
+            mpvView?.keepScreenOn = shouldKeepScreenOn
         }
     }
 
     LaunchedEffect(mpvView, aspectMode) {
-        mpvView.applyAspectMode(aspectMode)
+        mpvView?.applyAspectMode(aspectMode)
     }
 
     LaunchedEffect(mpvView, subtitleStyle) {
-        mpvView.applySubtitleStyle(subtitleStyle)
+        mpvView?.applySubtitleStyle(subtitleStyle)
     }
 }
 
