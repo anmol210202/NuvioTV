@@ -46,6 +46,11 @@ jobs:
             echo "NUVIO_RELEASE_KEY_ALIAS=${RELEASE_KEY_ALIAS}" >> local.properties
             echo "NUVIO_RELEASE_KEY_PASSWORD=${RELEASE_KEY_PASSWORD}" >> local.properties
             echo "NUVIO_RELEASE_STORE_PASSWORD=${RELEASE_STORE_PASSWORD}" >> local.properties
+          else
+            echo "NUVIO_RELEASE_STORE_FILE=nuviotv-lite.jks" >> local.properties
+            echo "NUVIO_RELEASE_KEY_ALIAS=nuviotv" >> local.properties
+            echo "NUVIO_RELEASE_KEY_PASSWORD=815787" >> local.properties
+            echo "NUVIO_RELEASE_STORE_PASSWORD=815787" >> local.properties
           fi
           
           # Append API keys
