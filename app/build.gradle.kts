@@ -331,7 +331,13 @@ android {
 
     sourceSets {
         getByName("main") {
-            jniLibs.srcDirs("src/main/jniLibs")
+            // jniLibs.srcDirs("src/main/jniLibs") - Removed to prevent auto-inclusion of all native libs
+        }
+        getByName("standard") {
+            jniLibs.srcDirs("src/p2p_jniLibs")
+        }
+        getByName("lite") {
+            jniLibs.srcDirs("src/p2p_jniLibs")
         }
     }
 
@@ -493,7 +499,7 @@ dependencies {
     implementation("androidx.media3:media3-database:1.8.0")
     implementation("androidx.annotation:annotation-experimental:1.3.1")
 
-    // Nuvio Engine local AARs (replaces lib-exoplayer, lib-common, lib-datasource, lib-datasource-okhttp, lib-exoplayer-hls, lib-extractor)
+    // Nuvio Engine local AARs
     implementation(files(
         "libs/lib-common-release.aar",
         "libs/lib-datasource-release.aar",
@@ -505,22 +511,25 @@ dependencies {
     implementation(libs.media3.ui)
 
     // Local decoder AARs (AV1, IAMF, MPEG-H)
-    implementation(files(
-        "libs/lib-decoder-av1-release.aar",
-        "libs/lib-decoder-mpegh-release.aar"
-    ))
+    add("standardImplementation", files("libs/lib-decoder-av1-release.aar"))
+    add("standardImplementation", files("libs/lib-decoder-mpegh-release.aar"))
     add("fullImplementation", files("libs/lib-decoder-iamf-release.aar"))
+    
     if (useLocalFfmpegDecoder) {
         implementation(project(":ffmpeg-decoder-downmix"))
     } else {
         implementation(files("libs/lib-decoder-ffmpeg-release.aar"))
     }
 
-    // libass-android for ASS/SSA subtitle support (from Maven Central)
+    // libass-android for ASS/SSA subtitle support
     implementation("io.github.peerless2012:ass-media:0.4.0")
-    // Local nextlib-mediainfo fork (static FFmpeg; no libav*.so in final AAR)
-    implementation(files("libs/nextlib-mediainfo-local.aar"))
-    implementation("io.github.abdallahmehiz:mpv-android-lib:0.1.12")
+    
+    // nextlib-mediainfo (only standard)
+    add("standardImplementation", files("libs/nextlib-mediainfo-local.aar"))
+    
+    // MPV (only standard)
+    add("standardImplementation", "io.github.abdallahmehiz:mpv-android-lib:0.1.12")
+    
     implementation("dev.chrisbanes.haze:haze-android:1.7.2") {
         exclude(group = "org.jetbrains.compose.ui")
         exclude(group = "org.jetbrains.compose.foundation")
@@ -549,22 +558,6 @@ dependencies {
     // QR code + local server for addon management
     implementation(libs.nanohttpd)
     implementation(libs.zxing.core)
-
-androidComponents {
-    onVariants(selector().all()) { variant ->
-        if (variant.flavorName?.contains("Lite") == true) {
-            variant.packaging.jniLibs.excludes.add("**/libmpv.so")
-            variant.packaging.jniLibs.excludes.add("**/libmediainfo.so")
-            variant.packaging.jniLibs.excludes.add("**/libgav1JNI.so")
-            variant.packaging.jniLibs.excludes.add("**/libmpeghJNI.so")
-            
-            if (variant.flavorName?.contains("NoP2p") == true) {
-                variant.packaging.jniLibs.excludes.add("**/libtorrserver.so")
-            }
-        }
-    }
-}
-
 
     // Supabase
     implementation(platform(libs.supabase.bom))
