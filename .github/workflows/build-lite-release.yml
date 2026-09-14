@@ -1,0 +1,81 @@
+name: Build NuvioTV Lite
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Lite APKs
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_KEYSTORE_BASE64: ${{ secrets.LITE_RELEASE_KEYSTORE_BASE64 }}
+      RELEASE_KEY_ALIAS: ${{ secrets.LITE_RELEASE_KEY_ALIAS }}
+      RELEASE_KEY_PASSWORD: ${{ secrets.LITE_RELEASE_KEY_PASSWORD }}
+      RELEASE_STORE_PASSWORD: ${{ secrets.LITE_RELEASE_STORE_PASSWORD }}
+      NUVIO_SUPABASE_URL: ${{ secrets.NUVIO_SUPABASE_URL }}
+      NUVIO_SUPABASE_ANON_KEY: ${{ secrets.NUVIO_SUPABASE_ANON_KEY }}
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Configure Keystore
+        run: |
+          if [[ -n "${RELEASE_KEYSTORE_BASE64}" ]]; then
+            keystore_path="${RUNNER_TEMP}/nuviotv-lite.jks"
+            printf '%s' "${RELEASE_KEYSTORE_BASE64}" | base64 --decode > "${keystore_path}"
+            
+            # Append to local.properties
+            echo "NUVIO_RELEASE_STORE_FILE=${keystore_path}" >> local.properties
+            echo "NUVIO_RELEASE_KEY_ALIAS=${RELEASE_KEY_ALIAS}" >> local.properties
+            echo "NUVIO_RELEASE_KEY_PASSWORD=${RELEASE_KEY_PASSWORD}" >> local.properties
+            echo "NUVIO_RELEASE_STORE_PASSWORD=${RELEASE_STORE_PASSWORD}" >> local.properties
+          fi
+          
+          # Append API keys
+          echo "NUVIO_SUPABASE_URL=${NUVIO_SUPABASE_URL}" >> local.properties
+          echo "NUVIO_SUPABASE_ANON_KEY=${NUVIO_SUPABASE_ANON_KEY}" >> local.properties
+          echo "TMDB_API_KEY=${TMDB_API_KEY}" >> local.properties
+
+      - name: Build Full Lite APKs
+        run: ./gradlew :app:assembleFullLiteRelease --stacktrace
+
+      - name: Build Full Lite No-P2P APKs
+        run: ./gradlew :app:assembleFullLiteNoP2pRelease --stacktrace
+        continue-on-error: true # Will be configured soon
+
+      - name: Upload Build Artifacts (Standard Lite)
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuviotv-lite-apks
+          path: app/build/outputs/apk/fullLite/release/*.apk
+
+      - name: Upload Build Artifacts (No P2P Lite)
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuviotv-lite-nop2p-apks
+          path: app/build/outputs/apk/fullLiteNoP2p/release/*.apk
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            app/build/outputs/apk/fullLite/release/*.apk
+            app/build/outputs/apk/fullLiteNoP2p/release/*.apk

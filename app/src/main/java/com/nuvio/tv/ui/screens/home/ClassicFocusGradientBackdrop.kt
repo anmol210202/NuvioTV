@@ -137,7 +137,7 @@ internal fun ClassicFocusGradientBackdrop(
                     .fillMaxSize()
                     .graphicsLayer {
                         alpha = alpha0
-                        compositingStrategy = CompositingStrategy.Offscreen
+                        compositingStrategy = com.nuvio.tv.ui.theme.NuvioCompositingStrategy
                     }
             ) {
                 drawFocusGradient(color0)
@@ -149,7 +149,7 @@ internal fun ClassicFocusGradientBackdrop(
                     .fillMaxSize()
                     .graphicsLayer {
                         alpha = alpha1
-                        compositingStrategy = CompositingStrategy.Offscreen
+                        compositingStrategy = com.nuvio.tv.ui.theme.NuvioCompositingStrategy
                     }
             ) {
                 drawFocusGradient(color1)

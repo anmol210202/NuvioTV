@@ -149,7 +149,7 @@ android {
         buildConfigField("String", "GITHUB_REPO", "\"NuvioTV\"")
     }
 
-    flavorDimensions += "distribution"
+    flavorDimensions += listOf("distribution", "performance")
     productFlavors {
         create("full") {
             dimension = "distribution"
@@ -169,6 +169,33 @@ android {
             buildConfigField("boolean", "FEATURE_EXTERNAL_TRAILERS_ENABLED", "true")
             buildConfigField("boolean", "FEATURE_EXTERNAL_PLAYBACK_KEEP_ALIVE_ENABLED", "false")
             buildConfigField("boolean", "FEATURE_CUSTOM_SERVER_CONNECTIONS_ENABLED", "false")
+        }
+        create("standard") {
+            dimension = "performance"
+            buildConfigField("boolean", "LITE_MODE", "false")
+            buildConfigField("boolean", "BLUR_ENABLED", "true")
+            buildConfigField("boolean", "TRAILER_PREVIEW_ENABLED", "true")
+            buildConfigField("boolean", "MPV_ENABLED", "true")
+            buildConfigField("boolean", "ANIMATED_IMAGE_DECODER_ENABLED", "true")
+            buildConfigField("boolean", "P2P_ENABLED", "true")
+        }
+        create("lite") {
+            dimension = "performance"
+            buildConfigField("boolean", "LITE_MODE", "true")
+            buildConfigField("boolean", "BLUR_ENABLED", "false")
+            buildConfigField("boolean", "TRAILER_PREVIEW_ENABLED", "false")
+            buildConfigField("boolean", "MPV_ENABLED", "false")
+            buildConfigField("boolean", "ANIMATED_IMAGE_DECODER_ENABLED", "false")
+            buildConfigField("boolean", "P2P_ENABLED", "true")
+        }
+        create("liteNoP2p") {
+            dimension = "performance"
+            buildConfigField("boolean", "LITE_MODE", "true")
+            buildConfigField("boolean", "BLUR_ENABLED", "false")
+            buildConfigField("boolean", "TRAILER_PREVIEW_ENABLED", "false")
+            buildConfigField("boolean", "MPV_ENABLED", "false")
+            buildConfigField("boolean", "ANIMATED_IMAGE_DECODER_ENABLED", "false")
+            buildConfigField("boolean", "P2P_ENABLED", "false")
         }
     }
 
@@ -522,6 +549,21 @@ dependencies {
     // QR code + local server for addon management
     implementation(libs.nanohttpd)
     implementation(libs.zxing.core)
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        if (variant.flavorName?.contains("Lite") == true) {
+            variant.packaging.jniLibs.excludes.add("**/libmpv.so")
+            variant.packaging.jniLibs.excludes.add("**/libmediainfo.so")
+            variant.packaging.jniLibs.excludes.add("**/libgav1JNI.so")
+            variant.packaging.jniLibs.excludes.add("**/libmpeghJNI.so")
+            
+            if (variant.flavorName?.contains("NoP2p") == true) {
+                variant.packaging.jniLibs.excludes.add("**/libtorrserver.so")
+            }
+        }
+    }
+}
 
 
     // Supabase

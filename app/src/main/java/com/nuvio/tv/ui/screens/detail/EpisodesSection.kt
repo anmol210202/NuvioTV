@@ -762,7 +762,7 @@ private fun EpisodeCard(
                     .fillMaxSize()
                     .graphicsLayer {
                         compositingStrategy =
-                            CompositingStrategy.Offscreen
+                            com.nuvio.tv.ui.theme.NuvioCompositingStrategy
                     }
                     .clipToBounds()
 

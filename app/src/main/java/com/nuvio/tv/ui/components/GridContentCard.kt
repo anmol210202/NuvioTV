@@ -221,7 +221,7 @@ fun GridContentCard(
                             .fillMaxWidth()
                             .height(cardHeight * 0.45f)
                             .graphicsLayer {
-                                compositingStrategy = CompositingStrategy.Offscreen
+                                compositingStrategy = com.nuvio.tv.ui.theme.NuvioCompositingStrategy
                             }
                             .drawWithCache {
                                 val gradient = Brush.verticalGradient(

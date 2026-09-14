@@ -117,23 +117,29 @@ class NuvioApplication : Application(), SingletonImageLoader.Factory {
 
         return ImageLoader.Builder(this)
             .components {
-                if (Build.VERSION.SDK_INT >= 28) {
-                    add(AnimatedImageDecoder.Factory())
-                } else {
-                    add(GifDecoder.Factory())
+                if (BuildConfig.ANIMATED_IMAGE_DECODER_ENABLED) {
+                    if (Build.VERSION.SDK_INT >= 28) {
+                        add(AnimatedImageDecoder.Factory())
+                    } else {
+                        add(GifDecoder.Factory())
+                    }
                 }
                 add(SvgDecoder.Factory())
-                add(
-                    coil3.network.okhttp.OkHttpNetworkFetcherFactory(
-                        callFactory = { imageOkHttpClient },
-                        cacheStrategy = {
-                            StaleWhileRevalidateCacheStrategy(
-                                revalidationClient = { imageOkHttpClient },
-                                imageLoaderProvider = imageLoaderRef,
-                            )
-                        },
+                if (BuildConfig.LITE_MODE) {
+                    add(coil3.network.okhttp.OkHttpNetworkFetcherFactory(callFactory = { imageOkHttpClient }))
+                } else {
+                    add(
+                        coil3.network.okhttp.OkHttpNetworkFetcherFactory(
+                            callFactory = { imageOkHttpClient },
+                            cacheStrategy = {
+                                StaleWhileRevalidateCacheStrategy(
+                                    revalidationClient = { imageOkHttpClient },
+                                    imageLoaderProvider = imageLoaderRef,
+                                )
+                            },
+                        )
                     )
-                )
+                }
             }
             .memoryCache {
                 val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -146,9 +152,9 @@ class NuvioApplication : Application(), SingletonImageLoader.Factory {
                 // Normal devices (>3GB): use 0.25 for snappy image loading.
                 // - allowHardware(false) keeps bitmaps on heap instead of GPU memory
                 val cachePercent = when {
-                    totalRamMb <= 2048 -> 0.15
-                    totalRamMb <= 3072 -> 0.20
-                    else -> 0.25
+                    totalRamMb <= 2048 -> if (BuildConfig.LITE_MODE) 0.10 else 0.15
+                    totalRamMb <= 3072 -> if (BuildConfig.LITE_MODE) 0.15 else 0.20
+                    else -> if (BuildConfig.LITE_MODE) 0.20 else 0.25
                 }
                 MemoryCache.Builder()
                     .maxSizePercent(context, cachePercent)
@@ -157,14 +163,14 @@ class NuvioApplication : Application(), SingletonImageLoader.Factory {
             .diskCache {
                 DiskCache.Builder()
                     .directory(cacheDir.resolve("image_cache").toOkioPath())
-                    .maxSizeBytes(200L * 1024 * 1024)
+                    .maxSizeBytes(if (BuildConfig.LITE_MODE) 80L * 1024 * 1024 else 200L * 1024 * 1024)
                     .build()
             }
             .crossfade(false)
             .precision(coil3.size.Precision.INEXACT)
             .allowHardware(false)
             .allowRgb565(imagePerformancePreferences.rgb565Enabled)
-            .bitmapFactoryMaxParallelism(4)
+            .bitmapFactoryMaxParallelism(if (BuildConfig.LITE_MODE) 2 else 4)
             .build()
     }
 }

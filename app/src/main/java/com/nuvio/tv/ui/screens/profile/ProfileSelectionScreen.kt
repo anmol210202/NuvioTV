@@ -849,7 +849,7 @@ private fun ProfileSelectionBackground(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+                        .graphicsLayer { compositingStrategy = com.nuvio.tv.ui.theme.NuvioCompositingStrategy }
                         .background(
                             brush = Brush.verticalGradient(
                                 colorStops = arrayOf(

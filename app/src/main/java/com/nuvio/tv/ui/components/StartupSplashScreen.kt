@@ -72,7 +72,7 @@ fun StartupSplashScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .graphicsLayer { compositingStrategy = androidx.compose.ui.graphics.CompositingStrategy.Offscreen }
+                    .graphicsLayer { compositingStrategy = com.nuvio.tv.ui.theme.NuvioCompositingStrategy }
                     .background(
                         brush = Brush.verticalGradient(
                             colorStops = arrayOf(

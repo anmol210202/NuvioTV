@@ -402,7 +402,8 @@ fun ContentCard(
                     MonochromePosterPlaceholder()
                 }
 
-                val shouldPlayTrailerPreview = isBackdropExpanded &&
+                val shouldPlayTrailerPreview = BuildConfig.TRAILER_PREVIEW_ENABLED && 
+                    isBackdropExpanded &&
                     focusedPosterBackdropTrailerEnabled &&
                     isFocused &&
                     trailerPreviewUrl != null
@@ -471,7 +472,7 @@ fun ContentCard(
                             .fillMaxWidth()
                             .height(96.dp)
                             .graphicsLayer {
-                                compositingStrategy = CompositingStrategy.Offscreen
+                                compositingStrategy = com.nuvio.tv.ui.theme.NuvioCompositingStrategy
                             }
                             .drawWithCache {
                                 val gradient = Brush.verticalGradient(

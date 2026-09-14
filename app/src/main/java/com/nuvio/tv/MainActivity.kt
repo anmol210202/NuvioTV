@@ -818,7 +818,7 @@ open class MainActivity : ComponentActivity() {
                     val sidebarCollapsed = mainUiPrefs.sidebarCollapsed
                     val modernSidebarEnabled = mainUiPrefs.modernSidebarEnabled
                     val modernSidebarBlurEnabled =
-                        mainUiPrefs.modernSidebarBlurPref && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S
+                        BuildConfig.BLUR_ENABLED && mainUiPrefs.modernSidebarBlurPref && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S
                     val hideBuiltInHeadersForFloatingPill = modernSidebarEnabled && !sidebarCollapsed
 
                     val startDestination = when {
@@ -2328,7 +2328,7 @@ private fun DrawerItemIcon(
         modifier
     } else {
         modifier
-            .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+            .graphicsLayer { compositingStrategy = com.nuvio.tv.ui.theme.NuvioCompositingStrategy }
             .drawWithCache {
                 onDrawWithContent {
                     drawContent()

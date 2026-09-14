@@ -742,7 +742,7 @@ fun ContinueWatchingCard(
                             .fillMaxSize()
                             .graphicsLayer {
                                 compositingStrategy =
-                                    CompositingStrategy.Offscreen
+                                    com.nuvio.tv.ui.theme.NuvioCompositingStrategy
                             }
                             .clip(cwClipShape)
 

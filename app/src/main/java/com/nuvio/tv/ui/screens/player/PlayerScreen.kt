@@ -1652,31 +1652,35 @@ private fun MpvPlayerSurface(
     val context = LocalContext.current
     val latestAspectMode by rememberUpdatedState(aspectMode)
     val mpvView = remember(context) {
-        NuvioMpvSurfaceView(context).apply {
-            isFocusable = false
-            isFocusableInTouchMode = false
-        }
+        if (com.nuvio.tv.BuildConfig.MPV_ENABLED) {
+            NuvioMpvSurfaceView(context).apply {
+                isFocusable = false
+                isFocusableInTouchMode = false
+            }
+        } else null
     }
 
-    AndroidView(
-        factory = { mpvView },
-        modifier = modifier.focusProperties { canFocus = false }
-    )
+    if (mpvView != null) {
+        AndroidView(
+            factory = { mpvView },
+            modifier = modifier.focusProperties { canFocus = false }
+        )
 
-    DisposableEffect(viewModel, mpvView) {
-        viewModel.attachMpvView(mpvView)
-        onDispose {
-            viewModel.attachMpvView(null)
+        DisposableEffect(viewModel, mpvView) {
+            viewModel.attachMpvView(mpvView)
+            onDispose {
+                viewModel.attachMpvView(null)
+            }
         }
-    }
 
-    DisposableEffect(mpvView) {
-        val listener = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            mpvView.applyAspectMode(latestAspectMode)
-        }
-        mpvView.addOnLayoutChangeListener(listener)
-        onDispose {
-            mpvView.removeOnLayoutChangeListener(listener)
+        DisposableEffect(mpvView) {
+            val listener = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+                mpvView.applyAspectMode(latestAspectMode)
+            }
+            mpvView.addOnLayoutChangeListener(listener)
+            onDispose {
+                mpvView.removeOnLayoutChangeListener(listener)
+            }
         }
     }
 

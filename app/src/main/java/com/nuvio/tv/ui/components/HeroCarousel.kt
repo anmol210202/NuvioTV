@@ -424,7 +424,7 @@ internal fun HeroCarouselBackdrop(
     Box(
         modifier = modifier
             .graphicsLayer {
-                compositingStrategy = CompositingStrategy.Offscreen
+                compositingStrategy = com.nuvio.tv.ui.theme.NuvioCompositingStrategy
             }
             .drawWithCache {
             val bottomStartFraction = if (fullPage) 0.55f else 0.30f

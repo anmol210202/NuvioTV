@@ -285,7 +285,7 @@ internal fun EpisodeOptionsOverlay(
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize()
-                        .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen },
+                        .graphicsLayer { compositingStrategy = com.nuvio.tv.ui.theme.NuvioCompositingStrategy },
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center,
                     filterQuality = FilterQuality.High
@@ -295,7 +295,7 @@ internal fun EpisodeOptionsOverlay(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+                        .graphicsLayer { compositingStrategy = com.nuvio.tv.ui.theme.NuvioCompositingStrategy }
                         .drawWithCache {
                             val brush = Brush.horizontalGradient(
                                 colorStops = arrayOf(

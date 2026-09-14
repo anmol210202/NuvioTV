@@ -63,20 +63,20 @@ object NuvioMotion {
     val tokens = NuvioMotionTokens(
         durations = NuvioMotionDurations(
             instant = 0,
-            quick = 125,
-            fast = 180,
-            medium = 350,
-            slow = 450,
-            overlay = 400,
-            sidebarLabelIn = 125,
-            sidebarLabelOut = 145,
-            sidebarPanelIn = 345,
-            sidebarPanelOut = 385,
-            sidebarBloomOut = 395,
-            sidebarEnter = 385,
-            sidebarExit = 145,
-            hero = 450,
-            shimmer = 1200
+            quick = if (com.nuvio.tv.BuildConfig.LITE_MODE) 80 else 125,
+            fast = if (com.nuvio.tv.BuildConfig.LITE_MODE) 100 else 180,
+            medium = if (com.nuvio.tv.BuildConfig.LITE_MODE) 200 else 350,
+            slow = if (com.nuvio.tv.BuildConfig.LITE_MODE) 250 else 450,
+            overlay = if (com.nuvio.tv.BuildConfig.LITE_MODE) 200 else 400,
+            sidebarLabelIn = if (com.nuvio.tv.BuildConfig.LITE_MODE) 80 else 125,
+            sidebarLabelOut = if (com.nuvio.tv.BuildConfig.LITE_MODE) 80 else 145,
+            sidebarPanelIn = if (com.nuvio.tv.BuildConfig.LITE_MODE) 200 else 345,
+            sidebarPanelOut = if (com.nuvio.tv.BuildConfig.LITE_MODE) 200 else 385,
+            sidebarBloomOut = if (com.nuvio.tv.BuildConfig.LITE_MODE) 200 else 395,
+            sidebarEnter = if (com.nuvio.tv.BuildConfig.LITE_MODE) 200 else 385,
+            sidebarExit = if (com.nuvio.tv.BuildConfig.LITE_MODE) 100 else 145,
+            hero = if (com.nuvio.tv.BuildConfig.LITE_MODE) 200 else 450,
+            shimmer = if (com.nuvio.tv.BuildConfig.LITE_MODE) 600 else 1200
         ),
         easings = NuvioMotionEasings(
             standard = FastOutSlowInEasing,
@@ -84,9 +84,9 @@ object NuvioMotion {
             decelerate = LinearOutSlowInEasing,
             accelerate = CubicBezierEasing(0.4f, 0f, 1f, 1f)
         ),
-        focusScale = 1.02f,
-        selectedScale = 1.01f,
-        pressedScale = 0.98f,
+        focusScale = if (com.nuvio.tv.BuildConfig.LITE_MODE) 1.0f else 1.02f,
+        selectedScale = if (com.nuvio.tv.BuildConfig.LITE_MODE) 1.0f else 1.01f,
+        pressedScale = if (com.nuvio.tv.BuildConfig.LITE_MODE) 1.0f else 0.98f,
         reducedMotionScale = 1f
     )
 

@@ -553,7 +553,7 @@ private fun StreamBackdrop(
 
     Box(modifier = modifier
         .fillMaxSize()
-        .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+        .graphicsLayer { compositingStrategy = com.nuvio.tv.ui.theme.NuvioCompositingStrategy }
     ) {
         // Backdrop image
         if (backdropModel != null) {

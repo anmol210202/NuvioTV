@@ -172,7 +172,7 @@ internal fun ModernHeroMediaLayer(
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer {
-                        compositingStrategy = CompositingStrategy.Offscreen
+                        compositingStrategy = com.nuvio.tv.ui.theme.NuvioCompositingStrategy
                         alpha = 1f - transitionProgressState.value
                     },
                 contentScale = ContentScale.Crop,
@@ -216,7 +216,7 @@ internal fun ModernHeroGradientLayer(
     Box(
         modifier = modifier
             .graphicsLayer {
-                compositingStrategy = CompositingStrategy.Offscreen
+                compositingStrategy = com.nuvio.tv.ui.theme.NuvioCompositingStrategy
                 alpha = if (isTrailerPlayingFullScreen()) 0f else 1f
             }
             .drawWithCache {

@@ -331,7 +331,7 @@ private fun SidebarNavigationItem(
             val iconModifier = if (iconBrush != null) {
                 Modifier
                     .size(NuvioComponents.tokens.sidebar.iconSize)
-                    .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+                    .graphicsLayer { compositingStrategy = com.nuvio.tv.ui.theme.NuvioCompositingStrategy }
                     .drawWithCache {
                         onDrawWithContent {
                             drawContent()

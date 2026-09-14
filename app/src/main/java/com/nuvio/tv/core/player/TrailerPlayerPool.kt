@@ -129,12 +129,16 @@ class TrailerPlayerPool @Inject constructor(
     private fun createPlayer(): ExoPlayer {
         val forceNative = cachedForceNative
         Log.d(TAG, "Creating shared trailer ExoPlayer instance with forceNativeAllocation = $forceNative")
+        val minBuffer = if (com.nuvio.tv.BuildConfig.LITE_MODE) 10_000 else 30_000
+        val maxBuffer = if (com.nuvio.tv.BuildConfig.LITE_MODE) 20_000 else 120_000
+        val playbackBuffer = if (com.nuvio.tv.BuildConfig.LITE_MODE) 2_000 else 5_000
+        val rebufferBuffer = if (com.nuvio.tv.BuildConfig.LITE_MODE) 4_000 else 10_000
         val loadControlBuilder = DefaultLoadControl.Builder()
             .setBufferDurationsMs(
-                /* minBufferMs = */ 30_000,
-                /* maxBufferMs = */ 120_000,
-                /* bufferForPlaybackMs = */ 5_000,
-                /* bufferForPlaybackAfterRebufferMs = */ 10_000
+                /* minBufferMs = */ minBuffer,
+                /* maxBufferMs = */ maxBuffer,
+                /* bufferForPlaybackMs = */ playbackBuffer,
+                /* bufferForPlaybackAfterRebufferMs = */ rebufferBuffer
             )
         if (forceNative) {
             val allocator = DefaultAllocator(
